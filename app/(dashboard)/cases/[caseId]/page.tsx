@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth/middleware";
 import { prisma } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import SessionNoteForm from "@/components/SessionNoteForm";
 import EmotionChart from "@/components/EmotionChart";
@@ -15,6 +16,15 @@ import {
   Activity,
 } from "lucide-react";
 
+type CaseWithNotes = Prisma.CaseGetPayload<{
+  include: {
+    assignedTo: { select: { id: true; fullName: true; email: true } };
+    sessionNotes: {
+      include: { counselor: { select: { fullName: true } } };
+    };
+  };
+}>;
+
 export default async function CaseDetailPage({
   params,
 }: {
@@ -24,7 +34,7 @@ export default async function CaseDetailPage({
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const caseData = await prisma.case.findUnique({
+  const caseData: CaseWithNotes | null = await prisma.case.findUnique({
     where: { id: caseId },
     include: {
       assignedTo: { select: { id: true, fullName: true, email: true } },
@@ -217,57 +227,59 @@ export default async function CaseDetailPage({
               </h2>
             </div>
             <div className="space-y-4">
-              {caseData.sessionNotes.map((note) => (
-                <div
-                  key={note.id}
-                  className="border-l-4 border-blue-500 bg-linear-to-r from-blue-50 to-transparent rounded-r-xl p-6 hover:shadow-md transition-all duration-200"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <p className="font-bold text-gray-900 text-lg">
-                        {note.counselor.fullName}
-                      </p>
-                      <p className="text-sm text-gray-500 flex items-center gap-2 mt-1.5">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(note.createdAt).toLocaleString("en-US", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-800 leading-relaxed mb-4 text-base">
-                    {note.noteContent}
-                  </p>
-
-                  {note.actionTaken && (
-                    <div className="bg-blue-100 border-l-4 border-blue-500 rounded-r-lg p-4 mb-3">
-                      <p className="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2">
-                        Action Taken
-                      </p>
-                      <p className="text-sm text-blue-800 font-medium">
-                        {note.actionTaken}
-                      </p>
-                    </div>
-                  )}
-
-                  {note.followUpDate && (
-                    <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-lg text-sm font-semibold border border-amber-300">
-                      <Clock className="w-4 h-4" />
-                      <span>
-                        Follow-up:{" "}
-                        {new Date(note.followUpDate).toLocaleDateString(
-                          "en-US",
-                          {
+              {caseData.sessionNotes.map(
+                (note: CaseWithNotes["sessionNotes"][number]) => (
+                  <div
+                    key={note.id}
+                    className="border-l-4 border-blue-500 bg-linear-to-r from-blue-50 to-transparent rounded-r-xl p-6 hover:shadow-md transition-all duration-200"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="font-bold text-gray-900 text-lg">
+                          {note.counselor.fullName}
+                        </p>
+                        <p className="text-sm text-gray-500 flex items-center gap-2 mt-1.5">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(note.createdAt).toLocaleString("en-US", {
                             dateStyle: "medium",
-                          }
-                        )}
-                      </span>
+                            timeStyle: "short",
+                          })}
+                        </p>
+                      </div>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    <p className="text-gray-800 leading-relaxed mb-4 text-base">
+                      {note.noteContent}
+                    </p>
+
+                    {note.actionTaken && (
+                      <div className="bg-blue-100 border-l-4 border-blue-500 rounded-r-lg p-4 mb-3">
+                        <p className="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2">
+                          Action Taken
+                        </p>
+                        <p className="text-sm text-blue-800 font-medium">
+                          {note.actionTaken}
+                        </p>
+                      </div>
+                    )}
+
+                    {note.followUpDate && (
+                      <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-lg text-sm font-semibold border border-amber-300">
+                        <Clock className="w-4 h-4" />
+                        <span>
+                          Follow-up:{" "}
+                          {new Date(note.followUpDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              dateStyle: "medium",
+                            }
+                          )}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )
+              )}
             </div>
           </div>
         )}
