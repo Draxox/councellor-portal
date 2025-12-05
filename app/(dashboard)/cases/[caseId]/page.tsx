@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/lib/auth/middleware";
 import { prisma } from "@/lib/db";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import SessionNoteForm from "@/components/SessionNoteForm";
 import EmotionChart from "@/components/EmotionChart";
