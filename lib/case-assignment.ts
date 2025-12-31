@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { CaseStatus } from "@prisma/client";
+import { CaseStatus } from "@/app/generated/prisma/client";
 
 /**
  * Auto-assigns a case to the counselor with the lowest case load

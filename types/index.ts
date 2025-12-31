@@ -4,7 +4,7 @@ import {
   SessionNote,
   RiskLevel,
   CaseStatus,
-} from "@prisma/client";
+} from "@/app/generated/prisma/client";
 
 export type CaseWithDetails = Case & {
   assignedTo?: Pick<Counselor, "id" | "fullName" | "email"> | null;

@@ -1,7 +1,7 @@
 // lib/db.ts
 
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 // Create PostgreSQL adapter (MANDATORY in Prisma 7)

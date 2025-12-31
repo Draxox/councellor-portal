@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/middleware";
 import { decrementCaseLoad } from "@/lib/case-assignment";
-import { CaseStatus } from "@prisma/client";
+import { CaseStatus } from "@/app/generated/prisma/client";
 
 const NoteSchema = z.object({
   noteContent: z.string().min(10),
