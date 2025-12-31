@@ -10,8 +10,8 @@ const EscalationSchema = z.object({
   riskScore: z.number(),
   riskLevel: z.enum(["MODERATE", "HIGH", "CRITICAL"]),
   triggerType: z.string(),
-  emotionSnapshot: z.record(z.any()),
-  assessmentData: z.record(z.any()).optional(),
+  emotionSnapshot: z.record(z.string(), z.any()),
+  assessmentData: z.record(z.string(), z.any()).optional(),
   timestamp: z.string(),
 });
 

@@ -1,8 +1,8 @@
 // components/dashboard/CasesList.tsx
 
 import Link from "next/link";
-import { Case } from "@prisma/client";
-import { Clock, ArrowRight } from "lucide-react";
+import { Case } from "@/app/generated/prisma/client";
+import { Clock, ArrowRight, Users } from "lucide-react";
 import { formatTimeAgo } from "@/lib/utils";
 
 interface CasesListProps {

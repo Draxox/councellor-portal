@@ -1,7 +1,7 @@
 // components/CaseCard.tsx
 
 import Link from "next/link";
-import { Case } from "@prisma/client";
+import { Case } from "@/app/generated/prisma/client";
 import { formatTimeAgo } from "@/lib/utils";
 import { Clock, FileText, TrendingUp } from "lucide-react";
 
